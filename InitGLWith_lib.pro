@@ -9,8 +9,8 @@ CONFIG += c++17 cmdline
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        drawtext.cpp \
         main.cpp \
+        shader.cpp \
         testengine.cpp
 
 
@@ -21,8 +21,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../GLFrameWork/build/Desktop-Debug/release/ -lGLFrameWork
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../GLFrameWork/build/Desktop-Debug/debug/ -lGLFrameWork
-#else:unix: LIBS += -L$$PWD/../GLFrameWork/build/Desktop-Debug/ -lGLFrameWork
-else:unix: LIBS += -L/home/paul/workspace/GLFrameWork/build/Desktop-Desktop-Release/ -lGLFrameWork
+else:unix: LIBS += -L$$PWD/../GLFrameWork/build/Desktop-Debug/ -lGLFrameWork
+#else:unix: LIBS += -L/home/paul/workspace/GLFrameWork/build/Desktop-Desktop-Release/ -lGLFrameWork
 
 INCLUDEPATH += $$PWD/../GLFrameWork
 DEPENDPATH += $$PWD/../GLFrameWork
@@ -30,7 +30,7 @@ DEPENDPATH += $$PWD/../GLFrameWork
 INCLUDEPATH += $$PWD/../GLFrameWork
 
 HEADERS += \
-    drawtext.h \
+    shader.h \
     testengine.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/release/ -lSDL2_image
@@ -61,5 +61,19 @@ else:unix: LIBS += -L$$PWD/../../../../usr/lib64/ -lfreetype
 INCLUDEPATH += $$PWD/../../../../usr/include/
 DEPENDPATH += $$PWD/../../../../usr/include/
 
-#INCLUDEPATH += /usr/include/glm
-#DEPENDPATH += /usr/include/glm
+INCLUDEPATH += /usr/include/glm
+DEPENDPATH += /usr/include/glm
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/release/ -lGL
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/debug/ -lGL
+else:unix: LIBS += -L$$PWD/../../../../usr/lib64/ -lGL
+
+INCLUDEPATH += $$PWD/../../../../usr/include/GL
+DEPENDPATH += $$PWD/../../../../usr/include/GL
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/release/ -lGLEW
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/debug/ -lGLEW
+else:unix: LIBS += -L$$PWD/../../../../usr/lib64/ -lGLEW
+
+INCLUDEPATH += $$PWD/../../../../usr/include/GL
+DEPENDPATH += $$PWD/../../../../usr/include/GL

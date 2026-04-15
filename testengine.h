@@ -3,11 +3,13 @@
 
 #include <glframework.h>
 #include <logger.h>
+#include <rendertext.h>
+
 
 class TestEngine : public GLFrameWork
 {
 public:
-    TestEngine();
+    TestEngine(int resx,int resy);
     ~TestEngine();
     virtual void DestroySDL() override;
 
@@ -15,6 +17,9 @@ public:
 
     void PrintData();
 
+protected:
+
+    RenderText * text;
 private:
     Logger log;
 

@@ -4,8 +4,8 @@
 #include "imageloader.h"
 
 
-TestEngine::TestEngine():
-    GLFrameWork(){
+TestEngine::TestEngine(int resx, int resy):
+    GLFrameWork(resx,resy){
 
 }
 
@@ -39,8 +39,9 @@ bool TestEngine::InitEngine(){
        log.logError("Kein surface geladen");
 
     log.loginfo("Stelle auf andere Hintergrundfarbe um: GRAU ");
-    setClearColor(0.8f,0.8f,1.0f,1.0f);
 
+
+    setClearColor(0.8f,0.8f,1.0f,1.0f);  
 
     return true;
 }

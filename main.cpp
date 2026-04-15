@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-    TestEngine * testengine = new TestEngine();
+    TestEngine * testengine = new TestEngine(1440,1080);
     if (testengine->InitSDL())
     {
         cout<<"OpenGL Context und Fenster erzeugt " << std::endl;

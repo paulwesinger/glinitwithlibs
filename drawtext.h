@@ -14,9 +14,14 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+
+#include "shader.h"
+#include "vartypes.h"
+#include <logger.h>
 
 using namespace std;
 
@@ -41,12 +46,89 @@ struct sTextfeld{
     GLfloat h;
 };
 
-
-class DrawText
+class RenderText
 {
 public:
-    DrawText();
+    RenderText();
+    RenderText(int resx, int resy,Shader * sh);
+    RenderText(const RenderText& orig);
 
+     bool Init(int resx,int resy);
+
+protected:
+    bool _FAILED;
+
+    GLfloat _Scale;
+
+    glm::vec4 _TextColor;
+    glm::vec4 _BackgroundColor;
+
+    int _ResX;
+    int _ResY;
+
+    sPoint _Pos;
+
+    GLfloat posX;
+    GLfloat posY;
+
+    GLuint _VAO;
+    GLuint _VBO;
+    GLuint _EBO;
+
+    // Buffers und arrays für Background
+    GLuint _bgVAO;
+    GLuint _bgVBO;
+    GLuint _bgEBO;
+
+    Shader * shader;
+    // ints for shader returns
+    int vs;
+    int fs;
+
+    // -----------------------
+    // Shader für das Textfeld
+    //------------------------
+    int vs_textfeld;
+    int fs_textfeld;
+    uint _TextureShader,_GlyphShader,_ColorShader,_CurrentShader;
+
+    GLint mv_projectloc;
+    GLint uniform_colorloc;
+    // uniformlocations in textfeldshader --> nur einmal setzen ,
+    // für alle 3 Renderer(Headline Paintarea, Bottom)
+    GLuint projection_loc, framecolor_loc;
+
+    glm::mat4 projection;
+
+    // -------------------------------
+    // Includes und libs für Freetype2
+    // -------------------------------
+    FT_Library ft;
+    FT_Face face;
+    std::string _Font;
+    // Einige Felder für look and feel:
+    FT_UInt _Pixelsize;
+    GLfloat _MarginLeft,_MarginRight, _MarginY;
+
+    std::map<GLchar, Character> Characters;
+    //Hilfsfunktion zum einlesen der 5 Texturen für Textfeld
+    bool GenTextfeldSegment(std::string image, unsigned int &tex);
+
+    sTextfeld _Textfeld;
+    std::vector<std::string> _StringList;
+
+    std::string _PathHeadLine;
+    std::string _PathTextField;
+    std::string _PathBottomLine;
+
+private:
+    // hlpvars for drag
+    int distX;
+    int distY;
+    sRect  interSectHeadline;
+    bool   _Dragging;
+
+    Logger log;
 
 };
 

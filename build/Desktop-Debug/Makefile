@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DQT_QML_DEBUG -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++1z -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
-INCPATH       = -I../../../InitGLWith_lib -I. -I../../../GLFrameWork -I../../../GLFrameWork -I/usr/include/SDL2 -I../../../includes -I../../../includes -I/usr/include -I/usr/local/Qt6/6.7.2/gcc_64/include -I/usr/local/Qt6/6.7.2/gcc_64/include/QtCore -I. -I/usr/local/Qt6/6.7.2/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../../../InitGLWith_lib -I. -I../../../GLFrameWork -I../../../GLFrameWork -I/usr/include/SDL2 -I../../../includes -I../../../includes -I/usr/include -I/usr/include/glm -I/usr/include/GL -I/usr/include/GL -I/usr/local/Qt6/6.7.2/gcc_64/include -I/usr/local/Qt6/6.7.2/gcc_64/include/QtCore -I. -I/usr/local/Qt6/6.7.2/gcc_64/mkspecs/linux-g++
 QMAKE         = /usr/local/Qt6/6.7.2/gcc_64/bin/qmake6
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = InitGLWith_lib1.0.0
 DISTDIR = /home/paul/workspace/InitGLWith_lib/build/Desktop-Debug/.tmp/InitGLWith_lib1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/usr/local/Qt6/6.7.2/gcc_64/lib
-LIBS          = $(SUBLIBS) -L/home/paul/workspace/GLFrameWork/build/Desktop-Desktop-Release/ -lGLFrameWork -L/home/paul/workspace/InitGLWith_lib/../../../../usr/lib64/ -lSDL2_image -L/home/paul/workspace/InitGLWith_lib/../libs/Logger/ -lLogger -L/home/paul/workspace/InitGLWith_lib/../libs/imageloader/ -lImageLoader -lfreetype /usr/local/Qt6/6.7.2/gcc_64/lib/libQt6Core.so -lpthread   
+LIBS          = $(SUBLIBS) -L/home/paul/workspace/InitGLWith_lib/../GLFrameWork/build/Desktop-Debug/ -lGLFrameWork -L/home/paul/workspace/InitGLWith_lib/../../../../usr/lib64/ -lSDL2_image -L/home/paul/workspace/InitGLWith_lib/../libs/Logger/ -lLogger -L/home/paul/workspace/InitGLWith_lib/../libs/imageloader/ -lImageLoader -lfreetype -lGL -lGLEW /usr/local/Qt6/6.7.2/gcc_64/lib/libQt6Core.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,11 +52,11 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../drawtext.cpp \
-		../../main.cpp \
+SOURCES       = ../../main.cpp \
+		../../shader.cpp \
 		../../testengine.cpp 
-OBJECTS       = drawtext.o \
-		main.o \
+OBJECTS       = main.o \
+		shader.o \
 		testengine.o
 DIST          = /usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.7.2/gcc_64/mkspecs/common/unix.conf \
@@ -401,9 +401,9 @@ DIST          = /usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/exceptions.prf \
 		/usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/yacc.prf \
 		/usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/lex.prf \
-		../../../../InitGLWith_lib.pro ../../drawtext.h \
-		../../testengine.h ../../drawtext.cpp \
-		../../main.cpp \
+		../../../../InitGLWith_lib.pro ../../shader.h \
+		../../testengine.h ../../main.cpp \
+		../../shader.cpp \
 		../../testengine.cpp
 QMAKE_TARGET  = InitGLWith_lib
 DESTDIR       = 
@@ -1122,8 +1122,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/local/Qt6/6.7.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../drawtext.h ../../testengine.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../drawtext.cpp ../../main.cpp ../../testengine.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../shader.h ../../testengine.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../shader.cpp ../../testengine.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1171,9 +1171,6 @@ compiler_clean: compiler_moc_predefs_clean
 
 ####### Compile
 
-drawtext.o: ../../drawtext.cpp ../../drawtext.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o drawtext.o ../../drawtext.cpp
-
 main.o: ../../main.cpp ../../testengine.h \
 		../../../GLFrameWork/glframework.h \
 		../../../GLFrameWork/GLFrameWork_global.h \
@@ -1181,6 +1178,9 @@ main.o: ../../main.cpp ../../testengine.h \
 		../../../includes/logger.h \
 		../../../includes/Logger_global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+
+shader.o: ../../shader.cpp ../../shader.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o shader.o ../../shader.cpp
 
 testengine.o: ../../testengine.cpp ../../testengine.h \
 		../../../GLFrameWork/glframework.h \
