@@ -54,10 +54,12 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../../main.cpp \
 		../../shader.cpp \
-		../../testengine.cpp 
+		../../testengine.cpp \
+		../../textdraw.cpp 
 OBJECTS       = main.o \
 		shader.o \
-		testengine.o
+		testengine.o \
+		textdraw.o
 DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/common/unix.conf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/common/linux.conf \
@@ -428,9 +430,11 @@ DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/yacc.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/lex.prf \
 		../../../../InitGLWith_lib.pro ../../shader.h \
-		../../testengine.h ../../main.cpp \
+		../../testengine.h \
+		../../textdraw.h ../../main.cpp \
 		../../shader.cpp \
-		../../testengine.cpp
+		../../testengine.cpp \
+		../../textdraw.cpp
 QMAKE_TARGET  = InitGLWith_lib
 DESTDIR       = 
 TARGET        = InitGLWith_lib
@@ -1200,8 +1204,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../shader.h ../../testengine.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../shader.cpp ../../testengine.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../shader.h ../../testengine.h ../../textdraw.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../shader.cpp ../../testengine.cpp ../../textdraw.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1275,6 +1279,13 @@ testengine.o: ../../testengine.cpp ../../testengine.h \
 		../../../includes/imageloader.h \
 		../../../includes/ImageLoader_global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testengine.o ../../testengine.cpp
+
+textdraw.o: ../../textdraw.cpp ../../textdraw.h \
+		../../shader.h \
+		../../../GLFrameWork/vartypes.h \
+		../../../includes/logger.h \
+		../../../includes/Logger_global.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textdraw.o ../../textdraw.cpp
 
 ####### Install
 

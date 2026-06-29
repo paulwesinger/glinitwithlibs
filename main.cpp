@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
         testengine->PrintData();
 
         if (testengine->InitEngine()){
-
-           testengine->Run();
+            testengine->Run();
         }
     }
     else{

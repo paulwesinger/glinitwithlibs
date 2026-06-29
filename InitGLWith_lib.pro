@@ -11,7 +11,8 @@ CONFIG += c++17 cmdline
 SOURCES += \
         main.cpp \
         shader.cpp \
-        testengine.cpp
+        testengine.cpp \
+        textdraw.cpp
 
 
 # Default rules for deployment.
@@ -31,7 +32,8 @@ INCLUDEPATH += $$PWD/../GLFrameWork
 
 HEADERS += \
     shader.h \
-    testengine.h
+    testengine.h \
+    textdraw.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/release/ -lSDL2_image
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib64/debug/ -lSDL2_image

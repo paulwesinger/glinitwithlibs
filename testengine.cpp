@@ -26,7 +26,6 @@ void TestEngine::DestroySDL(){
 // Init. der engine-> Images, renderer, usw laden
 // ****************************************************************
 bool TestEngine::InitEngine(){
-
     log.loginfo("Starte initialisierung der engine","TestEngine::IniEngine");
     log.loginfo(getCurrentDisplayModeAsString(),"TestEngine::InitEngine");
     log.logEmptyLine(1);
@@ -38,17 +37,36 @@ bool TestEngine::InitEngine(){
     else
        log.logError("Kein surface geladen");
 
-    log.loginfo("Stelle auf andere Hintergrundfarbe um: GRAU ");
-    setClearColor(0.8f,0.8f,1.0f,1.0f);
 
-    return true;
+    // *******************
+    // Standard Farbe Grau
+    // *******************
+    setClearColor(0.5f,0.5f,0.5f,0.5f);
+
+    log.loginfo("TestEngine:: Background nach Grau");
+    log.loginfo(Log());
+
+    Logtext = "";
+
+    if (AddTextDisplay()) {
+
+        _Texts[0]->SetText("Neues Fenster");
+        log.loginfo("Text Display erstellt");
+
+
+        log.loginfo(_Texts[0]->GetText());
+        return true;
+    }
+
+    log.logwarn("Text Display NICHT erstellt");
+    return false;
 }
-
 
 void TestEngine::PrintData(){
     std::string log = Log();
     PrintDisplayModes();
     PrintOpenGLData();
-    log = Log();
-    std::cout << log ;
+    std::cout << Log() ;
+    Logtext = "";
+
 }
