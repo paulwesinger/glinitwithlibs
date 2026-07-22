@@ -1,6 +1,7 @@
-#include <gtc/type_ptr.hpp>
 #include "textdraw.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 // Element Indices
 static const GLushort vertex_indices[] =
     {
@@ -77,7 +78,34 @@ void TextDraw::initConstructor(int resx,int resy,Shader * sh){
     _MarginRight= 5.0f;
     _MarginY = 5.0f;
     _AlignRight = false;
+    _HasTexture = false;
 }
+
+
+void TextDraw::SetText(string text){
+    try{
+        _StringList.push_back(text);
+    }
+    catch(const std::exception& e)
+    {
+        log.logwarn(e.what());
+    }
+}
+
+string TextDraw::GetText(int index){
+
+    try{
+        return _StringList[0];
+    }
+    catch(const std::exception e){
+        return e.what();
+    }
+}
+
+void TextDraw::SetGlyphShader(GLuint s) {
+    _GlyphShader = s;
+}
+
 bool TextDraw::Init(){
 
 
@@ -223,6 +251,137 @@ bool TextDraw::Init(){
 }
 void TextDraw::Draw(){
 
+    GLfloat _x = posX;
+    GLfloat _y = posY;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Breite ermitteln:
+    std::string::const_iterator c;
+    int width;
+    int height;
+
+    CalcSize(width,height);
+    _Textfeld.x = posX;
+    _Textfeld.y = posY;
+    _Textfeld.w = width * _Scale + _MarginLeft + _MarginRight;
+    _Textfeld.h = height;
+    GLfloat newX;
+    if ( _AlignRight )
+        newX = _ResX - _Textfeld.w;
+    else
+        newX = _x;
+
+    // --------------------------------
+    // Erstmal alles fürs TextFenster
+    //---------------------------------
+    if (_HasTexture)
+        _CurrentShader = _Shader ->getTexture2DShader();
+    else
+        _CurrentShader = _Shader->getColor2DShader();
+
+    glUseProgram(_CurrentShader);
+
+    projection_loc = glGetUniformLocation(_CurrentShader,"projection_textfeld");
+    framecolor_loc = glGetUniformLocation(_CurrentShader,"color");
+    // IDentity
+    glm::mat4 Model(1.0f);
+
+    glm::mat4 mp = projection ;//* Model ;
+    glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(mp)); // projection matrix im shader init.
+    //  glUniform4f(framecolor_loc,_BackgroundColor.r,_BackgroundColor.g,_BackgroundColor.b,_BackgroundColor.a);
+
+
+    // if (_HasBackground ) {
+    //     // ALle Buffers binden ....
+    //     glBindVertexArray(_bgVAO);
+    //     glBindBuffer(GL_ARRAY_BUFFER,_bgVBO);
+    //     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_bgEBO);
+
+    //     RenderPaintarea(newX, _y - (16 - _MarginY*2), height);
+
+    //     // Alles Rendern
+    //     if (_RenderHeader)
+    //         RenderFrame(newX, _y - (16.0f - _MarginY*2), texHeadline );
+
+    //     if (_RenderBottom)
+    //         RenderFrame(newX, _y + height, texBottom );
+    //     // ... und aushängen
+    //     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //     glBindVertexArray(0);
+    // }
+
+
+    _x = newX + _MarginLeft;
+    GLfloat startX  = _x;
+    GLfloat row     = _y + 16.0f;//_MarginY;
+    //--------------------
+    // Text Rendern
+    //--------------------
+    glActiveTexture(GL_TEXTURE0);
+    GLuint s = _Shader->getGlyphShader();
+
+    SetGlyphShader(s);
+    glUseProgram( s); //   shader->getGlyphShader());
+
+
+    glBindVertexArray(_VAO);
+    mv_projectloc = glGetUniformLocation(_GlyphShader,"projection");
+    uniform_colorloc   = glGetUniformLocation(_GlyphShader,"col2D");
+
+    //glm::mat4 Model(1.0f);
+    glm::mat4 mvp = projection * Model ;
+
+    glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
+    glUniform4f(uniform_colorloc,_TextColor.r, _TextColor.g, _TextColor.b, _TextColor.a);
+
+    // Iterate through all characters
+    // std::string::const_iterator c;
+    for (uint i = 0; i < _StringList.size(); i++ ) {
+        for (c = _StringList[i].begin(); c != _StringList[i].end(); c++)
+        {
+            _Character ch = Characters[*c];
+
+            GLfloat xpos = _x + ch.Bearing.x * _Scale;
+            //GLfloat ypos = row - ((ch.Size.y - ch.Bearing.y) * _Scale) ;
+
+            GLfloat ypos;
+            ypos = row + ((ch.Size.y - ch.Bearing.y) * _Scale) ;
+
+            GLfloat w = ch.Size.x * _Scale;
+            GLfloat h = ch.Size.y * _Scale;
+            // Update VBO for each character
+            GLfloat vertices[6][4] = {
+                { xpos,     ypos - h - 6.0f,   0.0, 0.0 },  // alles 16 war 6 !!
+                { xpos,     ypos - 6.0f,       0.0, 1.0 },
+                { xpos + w, ypos - 6.0f,       1.0, 1.0 },
+
+                { xpos,     ypos - h - 6.0f,   0.0, 0.0 },
+                { xpos + w, ypos - 6.0f,       1.0, 1.0 },
+                { xpos + w, ypos - h - 6.0f,   1.0, 0.0 }
+            };
+            // Render glyph texture over quad
+            glBindTexture(GL_TEXTURE_2D,ch.TextureID);
+            // Update content of VBO memory
+            glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
+            // Render quad
+            //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,_EBO);
+            //glDrawElements( GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+            _x += (ch.Advance >> 6) * _Scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+        }
+        _x =     startX;
+        row +=  18.0f *_Scale; //  + bearingdiff ;  // 16
+    }
+    // Aufräumen
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D,0);
 }
 
 bool TextDraw::GenTextfeldSegment(std::string image, unsigned int &tex){

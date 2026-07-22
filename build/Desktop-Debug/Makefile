@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DQT_QML_DEBUG -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++1z -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
-INCPATH       = -I../../../InitGLWith_lib -I. -I../../../GLFrameWork -I../../../GLFrameWork -I/usr/include/SDL2 -I../../../includes -I../../../includes -I/usr/include -I/usr/include/glm -I/usr/include/GL -I/usr/include/GL -I/usr/local/Qt6/6.11.1/gcc_64/include -I/usr/local/Qt6/6.11.1/gcc_64/include/QtCore -I. -I/usr/local/Qt6/6.11.1/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../../../InitGLWith_lib -I. -I../../../includes -I../../../includes -I/usr/include -I/usr/include/glm -I/usr/include/GL -I/usr/include/SDL2 -I/usr/local/Qt6/6.11.1/gcc_64/include -I/usr/local/Qt6/6.11.1/gcc_64/include/QtCore -I. -I/usr/local/Qt6/6.11.1/gcc_64/mkspecs/linux-g++
 QMAKE         = /usr/local/Qt6/6.11.1/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = InitGLWith_lib1.0.0
 DISTDIR = /home/paul/workspace/InitGLWith_lib/build/Desktop-Debug/.tmp/InitGLWith_lib1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/usr/local/Qt6/6.11.1/gcc_64/lib
-LIBS          = $(SUBLIBS) -L/home/paul/workspace/InitGLWith_lib/../GLFrameWork/build/Desktop-Debug/ -lGLFrameWork -L/home/paul/workspace/InitGLWith_lib/../../../../usr/lib64/ -lSDL2_image -L/home/paul/workspace/InitGLWith_lib/../libs/Logger/ -lLogger -L/home/paul/workspace/InitGLWith_lib/../libs/imageloader/ -lImageLoader -lfreetype -lGL -lGLEW /usr/local/Qt6/6.11.1/gcc_64/lib/libQt6Core.so -lpthread   
+LIBS          = $(SUBLIBS) -L/home/paul/workspace/InitGLWith_lib/../../../../usr/lib64/ -lSDL2_image -L/home/paul/workspace/InitGLWith_lib/../libs/Logger/ -lLogger -L/home/paul/workspace/InitGLWith_lib/../libs/imageloader/ -lImageLoader -lfreetype -lGL -lGLEW -lSDL2 /usr/local/Qt6/6.11.1/gcc_64/lib/libQt6Core.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,14 +52,22 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../main.cpp \
+SOURCES       = ../../errorlogs.cpp \
+		../../fileutil.cpp \
+		../../main.cpp \
 		../../shader.cpp \
 		../../testengine.cpp \
-		../../textdraw.cpp 
-OBJECTS       = main.o \
+		../../textdraw.cpp \
+		../../utils.cpp \
+		../../vartypes.cpp 
+OBJECTS       = errorlogs.o \
+		fileutil.o \
+		main.o \
 		shader.o \
 		testengine.o \
-		textdraw.o
+		textdraw.o \
+		utils.o \
+		vartypes.o
 DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/common/unix.conf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/common/linux.conf \
@@ -429,12 +437,20 @@ DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/exceptions.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/yacc.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/lex.prf \
-		../../../../InitGLWith_lib.pro ../../shader.h \
+		../../../../InitGLWith_lib.pro ../../errorlogs.h \
+		../../fileutil.h \
+		../../shader.h \
 		../../testengine.h \
-		../../textdraw.h ../../main.cpp \
+		../../textdraw.h \
+		../../utils.h \
+		../../vartypes.h ../../errorlogs.cpp \
+		../../fileutil.cpp \
+		../../main.cpp \
 		../../shader.cpp \
 		../../testengine.cpp \
-		../../textdraw.cpp
+		../../textdraw.cpp \
+		../../utils.cpp \
+		../../vartypes.cpp
 QMAKE_TARGET  = InitGLWith_lib
 DESTDIR       = 
 TARGET        = InitGLWith_lib
@@ -1204,8 +1220,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../shader.h ../../testengine.h ../../textdraw.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../shader.cpp ../../testengine.cpp ../../textdraw.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../errorlogs.h ../../fileutil.h ../../shader.h ../../testengine.h ../../textdraw.h ../../utils.h ../../vartypes.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../errorlogs.cpp ../../fileutil.cpp ../../main.cpp ../../shader.cpp ../../testengine.cpp ../../textdraw.cpp ../../utils.cpp ../../vartypes.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1253,39 +1269,57 @@ compiler_clean: compiler_moc_predefs_clean
 
 ####### Compile
 
-main.o: ../../main.cpp ../../testengine.h \
-		../../../GLFrameWork/glframework.h \
-		../../../GLFrameWork/GLFrameWork_global.h \
-		../../../GLFrameWork/vartypes.h \
-		../../../GLFrameWork/rendertext.h \
-		../../../GLFrameWork/shader.h \
-		../../../GLFrameWork/fileutil.h \
+errorlogs.o: ../../errorlogs.cpp ../../errorlogs.h \
 		../../../includes/logger.h \
 		../../../includes/Logger_global.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o errorlogs.o ../../errorlogs.cpp
+
+fileutil.o: ../../fileutil.cpp ../../fileutil.h \
+		../../../includes/logger.h \
+		../../../includes/Logger_global.h \
+		../../utils.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fileutil.o ../../fileutil.cpp
+
+main.o: ../../main.cpp ../../testengine.h \
+		../../../includes/logger.h \
+		../../../includes/Logger_global.h \
+		../../textdraw.h \
+		../../shader.h \
+		../../fileutil.h \
+		../../vartypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
-shader.o: ../../shader.cpp ../../shader.h
+shader.o: ../../shader.cpp ../../shader.h \
+		../../fileutil.h \
+		../../../includes/logger.h \
+		../../../includes/Logger_global.h \
+		../../errorlogs.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o shader.o ../../shader.cpp
 
 testengine.o: ../../testengine.cpp ../../testengine.h \
-		../../../GLFrameWork/glframework.h \
-		../../../GLFrameWork/GLFrameWork_global.h \
-		../../../GLFrameWork/vartypes.h \
-		../../../GLFrameWork/rendertext.h \
-		../../../GLFrameWork/shader.h \
-		../../../GLFrameWork/fileutil.h \
 		../../../includes/logger.h \
 		../../../includes/Logger_global.h \
+		../../textdraw.h \
+		../../shader.h \
+		../../fileutil.h \
+		../../vartypes.h \
 		../../../includes/imageloader.h \
 		../../../includes/ImageLoader_global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testengine.o ../../testengine.cpp
 
 textdraw.o: ../../textdraw.cpp ../../textdraw.h \
 		../../shader.h \
-		../../../GLFrameWork/vartypes.h \
+		../../fileutil.h \
 		../../../includes/logger.h \
-		../../../includes/Logger_global.h
+		../../../includes/Logger_global.h \
+		../../vartypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o textdraw.o ../../textdraw.cpp
+
+utils.o: ../../utils.cpp ../../utils.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o utils.o ../../utils.cpp
+
+vartypes.o: ../../vartypes.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o vartypes.o ../../vartypes.cpp
 
 ####### Install
 

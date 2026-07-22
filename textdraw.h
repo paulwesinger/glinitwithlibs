@@ -41,6 +41,9 @@ public:
     void initConstructor(int resx,int resy,Shader * sh);
     bool Init();
     void Draw();
+
+    void SetText(std::string text );
+    string GetText(int index = 0);
 protected:
     bool _AlignRight;
     bool _FAILED;
@@ -86,6 +89,8 @@ protected:
 
     glm::mat4 projection;
 
+    bool _HasTexture;
+
     // -------------------------------
     // Includes und libs für Freetype2
     // -------------------------------
@@ -100,6 +105,7 @@ protected:
     std::map<GLchar, _Character> Characters;
     //Hilfsfunktion zum einlesen der 5 Texturen für Textfeld
     bool GenTextfeldSegment(std::string image, unsigned int &tex);
+     void SetGlyphShader(GLuint s);
 
     sRect _Textfeld;
     std::vector<std::string> _StringList;
