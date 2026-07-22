@@ -12,6 +12,7 @@ SOURCES += \
         errorlogs.cpp \
         fileutil.cpp \
         main.cpp \
+        projection.cpp \
         shader.cpp \
         testengine.cpp \
         textdraw.cpp \
@@ -37,6 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     errorlogs.h \
     fileutil.h \
+    projection.h \
     shader.h \
     testengine.h \
     textdraw.h \

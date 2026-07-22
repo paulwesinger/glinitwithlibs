@@ -55,6 +55,7 @@ OBJECTS_DIR   = ./
 SOURCES       = ../../errorlogs.cpp \
 		../../fileutil.cpp \
 		../../main.cpp \
+		../../projection.cpp \
 		../../shader.cpp \
 		../../testengine.cpp \
 		../../textdraw.cpp \
@@ -63,6 +64,7 @@ SOURCES       = ../../errorlogs.cpp \
 OBJECTS       = errorlogs.o \
 		fileutil.o \
 		main.o \
+		projection.o \
 		shader.o \
 		testengine.o \
 		textdraw.o \
@@ -439,6 +441,7 @@ DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/lex.prf \
 		../../../../InitGLWith_lib.pro ../../errorlogs.h \
 		../../fileutil.h \
+		../../projection.h \
 		../../shader.h \
 		../../testengine.h \
 		../../textdraw.h \
@@ -446,6 +449,7 @@ DIST          = /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/spec_pre.prf \
 		../../vartypes.h ../../errorlogs.cpp \
 		../../fileutil.cpp \
 		../../main.cpp \
+		../../projection.cpp \
 		../../shader.cpp \
 		../../testengine.cpp \
 		../../textdraw.cpp \
@@ -1220,8 +1224,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/local/Qt6/6.11.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../errorlogs.h ../../fileutil.h ../../shader.h ../../testengine.h ../../textdraw.h ../../utils.h ../../vartypes.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../errorlogs.cpp ../../fileutil.cpp ../../main.cpp ../../shader.cpp ../../testengine.cpp ../../textdraw.cpp ../../utils.cpp ../../vartypes.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../errorlogs.h ../../fileutil.h ../../projection.h ../../shader.h ../../testengine.h ../../textdraw.h ../../utils.h ../../vartypes.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../errorlogs.cpp ../../fileutil.cpp ../../main.cpp ../../projection.cpp ../../shader.cpp ../../testengine.cpp ../../textdraw.cpp ../../utils.cpp ../../vartypes.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1288,6 +1292,9 @@ main.o: ../../main.cpp ../../testengine.h \
 		../../fileutil.h \
 		../../vartypes.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+
+projection.o: ../../projection.cpp ../../projection.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o projection.o ../../projection.cpp
 
 shader.o: ../../shader.cpp ../../shader.h \
 		../../fileutil.h \

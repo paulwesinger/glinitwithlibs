@@ -87,7 +87,7 @@ protected:
     // für alle 3 Renderer(Headline Paintarea, Bottom)
     GLuint projection_loc, framecolor_loc;
 
-    glm::mat4 projection;
+    glm::mat4 MatOrtho;
 
     bool _HasTexture;
 

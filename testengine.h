@@ -7,6 +7,7 @@
 #include <logger.h>
 #include "textdraw.h"
 #include "vartypes.h"
+#include "projection.h"
 
 typedef enum{
     SDL_CONTEXT_OK = 0,
@@ -62,6 +63,7 @@ protected:
     void Restore3D();
 
     void InitShaders();
+    void InitProjection();
 
     SDL_Window * CreateGLWindow(bool fullscreen = false,string caption = "GLEngine");
     bool HandleMessage();
@@ -78,10 +80,9 @@ protected:
     int _ResY;
     bool _Quit;
 
+    Projection * projection = nullptr;
     Shader * _Shader;
     ShaderType _CurrentShader;
-
-    glm::mat4 projection;
 
     SDL_Event _Event;
     float4 _ClearColor;

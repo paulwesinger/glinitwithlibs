@@ -35,7 +35,15 @@ void TestEngine::Prepare2D() {
     //projection =  glm::orthoRH(0.0f,static_cast<GLfloat>(_ResX), static_cast<GLfloat>(_ResY), 0.0f,  -100.0f, 100.0f);
 }
 
-
+void TestEngine::InitProjection(){
+    projection = new Projection(0,_ResX,0,_ResY,0.01f,1000.0f);
+    if (projection != nullptr) {
+        log.loginfo("Created Procjection Class","InitGL::InitMatrices");
+    }
+    else{
+        log.logwarn("Creating Projection failed");
+    }
+}
 void TestEngine::InitShaders() {
     //================================================================
     //Test für CustomShader
@@ -53,7 +61,7 @@ void TestEngine::Restore3D() {
 
     glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
-    glDepthMask(1);
+    glDepthMask(1);   
 }
 
 SDL_DisplayMode TestEngine::getCurrentDisplayMode(){
@@ -79,7 +87,9 @@ bool TestEngine::InitEngine(){
     log.loginfo("Init Shaders","TestEngine::IniEngine");
     log.loginfo("####################################");
     log.logEmptyLine(1);
+
     InitShaders();
+    InitProjection();
 
 
     log.loginfo("Starte initialisierung der engine","TestEngine::IniEngine");

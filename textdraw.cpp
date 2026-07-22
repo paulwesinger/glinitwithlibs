@@ -288,7 +288,9 @@ void TextDraw::Draw(){
     // IDentity
     glm::mat4 Model(1.0f);
 
-    glm::mat4 mp = projection ;//* Model ;
+    MatOrtho = glm::orthoRH(0.0f,static_cast<GLfloat>(_ResX), static_cast<GLfloat>(_ResY), 0.0f,  -100.0f, 100.0f);
+
+    glm::mat4 mp = MatOrtho ;//* Model ;
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(mp)); // projection matrix im shader init.
     //  glUniform4f(framecolor_loc,_BackgroundColor.r,_BackgroundColor.g,_BackgroundColor.b,_BackgroundColor.a);
 
@@ -332,7 +334,7 @@ void TextDraw::Draw(){
     uniform_colorloc   = glGetUniformLocation(_GlyphShader,"col2D");
 
     //glm::mat4 Model(1.0f);
-    glm::mat4 mvp = projection * Model ;
+    glm::mat4 mvp = MatOrtho * Model ;
 
     glUniformMatrix4fv(mv_projectloc, 1, GL_FALSE, glm::value_ptr(mvp)); //projection));
     glUniform4f(uniform_colorloc,_TextColor.r, _TextColor.g, _TextColor.b, _TextColor.a);
