@@ -163,7 +163,7 @@ bool TestEngine::InitSDL(){
 }
 
 bool TestEngine::AddTextDisplay(){
-    sPoint p(10,10);
+    sPoint p(50,20);
     TextDraw * t = new TextDraw(_ResX,_ResY,p,_Shader);
 
     _Displays.push_back(t);

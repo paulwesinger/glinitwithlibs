@@ -56,6 +56,8 @@ static const GLchar * fs2D_src = {
 TextDraw::TextDraw(int resx, int resy, sPoint p, Shader *sh) {
     _Shader = sh;
     _Pos = p;
+    posX = p.x;
+    posY = p.y;
     initConstructor(resx,resy,sh);
     Init();
 }
